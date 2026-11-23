@@ -1,0 +1,700 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Estudio Abierto · Ciudadanía digital en acción</title>
+<style>
+:root{
+  --navy:#0F2E4C; --navy-2:#153E63; --teal:#13776F; --teal-2:#1C9A8F;
+  --sand:#F6F1E8; --paper:#FFFDFA; --amber:#E4A03C; --ink:#132A40;
+  --muted:#5C7286; --line:#DED6C8; --ok:#2F7D4F; --warn:#B4552D;
+  --shadow:0 10px 30px rgba(15,46,76,.10);
+  --radius:14px;
+}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0}
+body{
+  font-family:"Segoe UI",-apple-system,Roboto,Arial,sans-serif;
+  background:var(--sand); color:var(--ink); line-height:1.6; font-size:16px;
+}
+h1,h2,h3,h4{font-family:Georgia,"Times New Roman",serif; line-height:1.2; margin:0 0 .5em}
+h1{font-size:2.6rem; letter-spacing:-.5px}
+h2{font-size:1.75rem; color:var(--navy)}
+h3{font-size:1.18rem; color:var(--navy-2)}
+p{margin:0 0 1em}
+a{color:var(--teal); text-decoration:none; border-bottom:1px solid rgba(19,119,111,.35)}
+a:hover{border-bottom-color:var(--teal)}
+small,.small{font-size:.86rem}
+
+/* ---------- layout ---------- */
+.app{display:flex; min-height:100vh}
+.sidebar{
+  width:288px; flex:0 0 288px; background:var(--navy); color:#EAF1F6;
+  padding:26px 20px 18px; position:sticky; top:0; height:100vh; overflow-y:auto;
+}
+.brand{display:flex; gap:12px; align-items:flex-start; margin-bottom:22px}
+.brand-mark{
+  width:42px;height:42px;flex:0 0 42px;border-radius:12px;
+  background:linear-gradient(140deg,var(--teal-2),var(--amber));
+  display:grid;place-items:center;font-weight:700;color:#08202F;font-family:Georgia,serif;font-size:1.1rem
+}
+.brand-txt strong{display:block;font-family:Georgia,serif;font-size:1rem;letter-spacing:.2px}
+.brand-txt span{font-size:.72rem;letter-spacing:.14em;text-transform:uppercase;color:#9FB6C8}
+nav ol{list-style:none;margin:0;padding:0;counter-reset:n}
+nav li{margin:0 0 3px}
+nav button{
+  width:100%;text-align:left;background:transparent;border:0;color:#CBDCE7;
+  padding:9px 11px;border-radius:9px;cursor:pointer;font:inherit;font-size:.92rem;
+  display:flex;gap:10px;align-items:baseline;transition:background .15s,color .15s
+}
+nav button:hover{background:rgba(255,255,255,.07);color:#fff}
+nav button[aria-current="true"]{background:linear-gradient(90deg,rgba(28,154,143,.35),rgba(28,154,143,.05));color:#fff;box-shadow:inset 3px 0 0 var(--amber)}
+nav .num{font-size:.7rem;letter-spacing:.08em;color:#7FA0B6;min-width:16px}
+nav button[aria-current="true"] .num{color:var(--amber)}
+.progress{margin:20px 0 0;border-top:1px solid rgba(255,255,255,.12);padding-top:14px;font-size:.78rem;color:#9FB6C8}
+.progress .bar{height:6px;background:rgba(255,255,255,.13);border-radius:99px;margin-top:8px;overflow:hidden}
+.progress .bar i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--teal-2),var(--amber));transition:width .3s}
+.side-foot{margin-top:18px;font-size:.72rem;color:#7FA0B6;line-height:1.5}
+
+.main{flex:1; min-width:0; padding:0 0 60px}
+.topbar{
+  display:flex;align-items:center;justify-content:space-between;gap:14px;
+  padding:14px 40px;background:rgba(255,253,250,.92);backdrop-filter:blur(6px);
+  border-bottom:1px solid var(--line);position:sticky;top:0;z-index:20
+}
+.crumb{font-size:.8rem;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+.crumb b{color:var(--navy);font-weight:600}
+.top-actions{display:flex;gap:8px;align-items:center}
+.pill{
+  display:inline-flex;align-items:center;gap:6px;padding:4px 11px;border-radius:99px;
+  font-size:.76rem;font-weight:600;background:#EAF1F6;color:var(--navy-2);border:1px solid #D6E2EC
+}
+.pill.teal{background:rgba(28,154,143,.12);border-color:rgba(28,154,143,.3);color:#0C5B55}
+.pill.amber{background:rgba(228,160,60,.16);border-color:rgba(228,160,60,.35);color:#7A4B05}
+
+.screen{display:none; padding:38px 40px 0; max-width:1120px}
+.screen.active{display:block;animation:fade .28s ease}
+@keyframes fade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+
+/* ---------- hero ---------- */
+.hero{
+  position:relative;background:
+    radial-gradient(900px 380px at 88% -10%, rgba(28,154,143,.35), transparent 60%),
+    radial-gradient(700px 420px at 8% 110%, rgba(228,160,60,.22), transparent 60%),
+    linear-gradient(135deg,var(--navy),#123A5C 55%,#0E4E51);
+  color:#fff;border-radius:22px;padding:54px 52px 46px;overflow:hidden;box-shadow:var(--shadow)
+}
+.hero:after{
+  content:"";position:absolute;right:-70px;top:-70px;width:300px;height:300px;border-radius:50%;
+  border:1px solid rgba(255,255,255,.14);box-shadow:0 0 0 40px rgba(255,255,255,.04),0 0 0 90px rgba(255,255,255,.03)
+}
+.hero .kicker{font-size:.78rem;letter-spacing:.22em;text-transform:uppercase;color:#9FD3CB;margin-bottom:16px}
+.hero h1{font-size:clamp(2rem,3.6vw,3.1rem);margin-bottom:.35em;max-width:20ch}
+.hero .lead{font-size:1.12rem;color:#DCE9F0;max-width:58ch;margin-bottom:26px}
+.hero .meta{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:30px}
+.hero .meta span{background:rgba(255,255,255,.10);border:1px solid rgba(255,255,255,.18);padding:6px 13px;border-radius:99px;font-size:.82rem;color:#E8F2F6}
+.hero .cta{display:flex;gap:12px;flex-wrap:wrap;align-items:center}
+.btn{
+  display:inline-flex;align-items:center;gap:9px;padding:12px 22px;border-radius:11px;border:0;
+  font:inherit;font-weight:600;cursor:pointer;background:var(--amber);color:#2B1B05;
+  box-shadow:0 6px 18px rgba(228,160,60,.28)
+}
+.btn.ghost{background:transparent;color:#fff;border:1px solid rgba(255,255,255,.4);box-shadow:none}
+.btn.small{padding:8px 14px;font-size:.86rem}
+.author{margin-top:30px;padding-top:18px;border-top:1px solid rgba(255,255,255,.16);display:flex;flex-wrap:wrap;gap:18px;font-size:.82rem;color:#BFD4E0}
+.author b{color:#fff;font-weight:600}
+
+.grid{display:grid;gap:18px}
+.g2{grid-template-columns:repeat(2,minmax(0,1fr))}
+.g3{grid-template-columns:repeat(3,minmax(0,1fr))}
+.g4{grid-template-columns:repeat(4,minmax(0,1fr))}
+.card{background:var(--paper);border:1px solid var(--line);border-radius:var(--radius);padding:22px;box-shadow:0 2px 10px rgba(15,46,76,.05)}
+.card h3{margin-bottom:.35em}
+.card p:last-child{margin-bottom:0}
+.card .tag{font-size:.7rem;letter-spacing:.14em;text-transform:uppercase;color:var(--teal);font-weight:700}
+.card.num{border-top:4px solid var(--teal)}
+.card ul{margin:.4em 0 0;padding-left:1.1em}
+.card li{margin-bottom:.35em}
+
+.callout{border-left:4px solid var(--amber);background:#FDF6E8;padding:16px 20px;border-radius:0 12px 12px 0;margin:22px 0}
+.callout.info{border-left-color:var(--teal);background:#EAF5F3}
+.callout p:last-child{margin-bottom:0}
+
+table{width:100%;border-collapse:collapse;background:var(--paper);font-size:.9rem;border-radius:12px;overflow:hidden;box-shadow:0 2px 10px rgba(15,46,76,.05);margin:8px 0 22px}
+caption{caption-side:top;text-align:left;font-size:.8rem;color:var(--muted);padding:0 0 8px}
+th{background:var(--navy);color:#fff;text-align:left;font-weight:600;padding:11px 12px;font-size:.82rem;letter-spacing:.02em}
+td{padding:10px 12px;border-top:1px solid #EAE3D6;vertical-align:top}
+tbody tr:nth-child(even) td{background:#FBF8F2}
+td.c,th.c{text-align:center}
+.tot{font-weight:700;color:var(--navy)}
+
+.section-head{display:flex;justify-content:space-between;align-items:flex-end;gap:18px;margin-bottom:6px;flex-wrap:wrap}
+.eyebrow{font-size:.74rem;letter-spacing:.18em;text-transform:uppercase;color:var(--teal);font-weight:700;margin-bottom:6px}
+.lede{font-size:1.06rem;color:#334B60;max-width:74ch}
+
+.obj{border-left:4px solid var(--teal);padding-left:16px;margin:0 0 18px}
+.obj .verb{background:rgba(228,160,60,.22);padding:0 4px;border-radius:3px;font-weight:600}
+
+.role{display:flex;gap:12px;align-items:flex-start;padding:12px 0;border-top:1px dashed var(--line)}
+.role:first-child{border-top:0}
+.avatar{width:36px;height:36px;border-radius:10px;flex:0 0 36px;display:grid;place-items:center;font-weight:700;font-size:.8rem;background:rgba(19,119,111,.14);color:#0C5B55}
+.role b{display:block;font-size:.94rem}
+.role span{font-size:.88rem;color:var(--muted)}
+
+.board{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin:8px 0 20px}
+.col{background:#F1ECE2;border:1px solid var(--line);border-radius:12px;padding:10px}
+.col h4{font-family:inherit;font-size:.74rem;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin:2px 0 10px}
+.tk{background:#fff;border:1px solid var(--line);border-left:4px solid var(--teal);border-radius:8px;padding:9px 10px;font-size:.83rem;margin-bottom:8px;box-shadow:0 1px 4px rgba(15,46,76,.05)}
+.tk.done{border-left-color:var(--ok);opacity:.85}
+.tk.rev{border-left-color:var(--amber)}
+.tk.who{font-size:.72rem;color:var(--muted);display:block;margin-top:5px}
+
+.rubric td:first-child{font-weight:600;width:26%}
+.timeline{position:relative;margin:24px 0 8px;padding-left:26px}
+.timeline:before{content:"";position:absolute;left:7px;top:6px;bottom:6px;width:2px;background:linear-gradient(var(--teal),rgba(19,119,111,.15))}
+.tl{position:relative;margin-bottom:20px}
+.tl:before{content:"";position:absolute;left:-26px;top:5px;width:12px;height:12px;border-radius:50%;background:var(--paper);border:3px solid var(--teal)}
+.tl b{display:block;color:var(--navy)}
+.tl span{font-size:.88rem;color:var(--muted)}
+
+.gallery{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+.gitem{aspect-ratio:4/3;border:1px dashed #C9BFAE;border-radius:12px;display:grid;place-items:center;text-align:center;color:var(--muted);font-size:.85rem;padding:14px;background:#FBF8F2}
+.figcap{font-size:.82rem;color:var(--muted);margin-top:-6px}
+
+.navbtns{display:flex;justify-content:space-between;gap:12px;margin:36px 0 0;padding-top:20px;border-top:1px solid var(--line)}
+.navbtns button{background:var(--paper);border:1px solid var(--line);border-radius:10px;padding:10px 16px;font:inherit;font-size:.9rem;cursor:pointer;color:var(--navy)}
+.navbtns button:hover{border-color:var(--teal)}
+.navbtns .hint{font-size:.78rem;color:var(--muted);align-self:center}
+
+.badge{display:inline-block;font-size:.7rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;padding:2px 8px;border-radius:5px;background:#EAF1F6;color:var(--navy-2);margin-right:6px}
+.badge.read{background:#EDF3FA;color:#2B5A80}
+.badge.video{background:#FBE9E4;color:#9B3C22}
+.badge.ex{background:#EAF5F0;color:#1E6A4A}
+.badge.tpl{background:#F4EEE2;color:#7A5A1E}
+.badge.ins{background:#EEEAF7;color:#4B3B7A}
+
+footer.site{margin:48px 40px 0;padding-top:18px;border-top:1px solid var(--line);font-size:.78rem;color:var(--muted)}
+@media (max-width:1080px){
+  .app{flex-direction:column}
+  .sidebar{position:relative;width:100%;flex:none;height:auto;padding:18px}
+  .screen{padding:26px 20px 0}
+  .topbar{padding:12px 20px}
+  .g4,.g3{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .board{grid-template-columns:repeat(2,1fr)}
+  .hero{padding:34px 26px}
+  footer.site{margin:36px 20px 0}
+}
+@media (max-width:680px){
+  .g2,.g3,.g4,.gallery{grid-template-columns:1fr}
+  .hero h1{font-size:1.9rem}
+}
+</style>
+</head>
+<body>
+<div class="app">
+  <aside class="sidebar">
+    <div class="brand">
+      <div class="brand-mark">EA</div>
+      <div class="brand-txt">
+        <strong>Estudio Abierto</strong>
+        <span>Ciudadanía digital</span>
+      </div>
+    </div>
+    <nav aria-label="Ruta del ambiente">
+      <ol id="navList"></ol>
+    </nav>
+    <div class="progress">
+      <div><span id="pct">8%</span> del recorrido</div>
+      <div class="bar"><i id="pbar"></i></div>
+    </div>
+    <div class="side-foot">
+      Ambiente de aprendizaje colaborativo en línea<br>
+      UVEG · Tecnología e innovación en la sociedad del aprendizaje<br>
+      Reto 4 · 2026
+    </div>
+  </aside>
+
+  <main class="main">
+    <div class="topbar">
+      <div class="crumb">Módulo 3 · <b id="crumbNow">Portada</b></div>
+      <div class="top-actions">
+        <span class="pill teal">3 semanas</span>
+        <span class="pill amber">12 horas</span>
+        <span class="pill">7 contenidos</span>
+      </div>
+    </div>
+
+    <!-- 1 PORTADA -->
+    <section class="screen active" id="s1" data-title="Portada">
+      <div class="hero">
+        <div class="kicker">Ambiente de aprendizaje colaborativo en línea</div>
+        <h1>Ciudadanía digital en acción: campaña colaborativa para nuestra comunidad</h1>
+        <p class="lead">Un espacio de trabajo en equipo donde cada estudiante investiga, verifica, produce y evalúa con otros. No es un curso para leer: es un estudio abierto donde las decisiones se argumentan y los productos se publican.</p>
+        <div class="meta">
+          <span>Bachillerato · 3.<sup>er</sup> semestre</span>
+          <span>Equipos de 4 integrantes</span>
+          <span>3 semanas · 12 horas</span>
+          <span>Moodle + Teams + Padlet + Canva + Trello</span>
+        </div>
+        <div class="cta">
+          <button class="btn" onclick="go(1)">Comenzar el recorrido →</button>
+          <button class="btn ghost" onclick="go(8)">Ver las actividades</button>
+        </div>
+        <div class="author">
+          <span><b>Autor:</b> Jaime Demetrio Retana Ramos</span>
+          <span><b>Matrícula:</b> 15004441</span>
+          <span><b>Asesor:</b> Guillermo Alejandro Zaragoza Alvarado</span>
+          <span><b>Fecha:</b> noviembre de 2026</span>
+        </div>
+      </div>
+
+      <div class="grid g3" style="margin-top:26px">
+        <div class="card">
+          <div class="tag">Propósito</div>
+          <h3>Del acceso a la participación</h3>
+          <p>La lección de la unidad muestra que las plataformas no educan por sí solas: su valor aparece cuando sostienen interacción con una intención pedagógica. Aquí la intención es que el equipo produzca algo que su comunidad escolar pueda usar.</p>
+        </div>
+        <div class="card">
+          <div class="tag">Método</div>
+          <h3>Colaboración con estructura</h3>
+          <p>Cada actividad declara roles, hitos y criterios. La interdependencia no se pide: se diseña con recursos compartidos, evaluación entre pares y un tablero visible para todos.</p>
+        </div>
+        <div class="card">
+          <div class="tag">Producto</div>
+          <h3>Una campaña publicada</h3>
+          <p>Brief de campaña, pieza gráfica accesible y plan de difusión de una semana, más dos retroalimentaciones a otro equipo con rúbrica de cuatro criterios.</p>
+        </div>
+      </div>
+      <div class="navbtns"><span class="hint">Usa las flechas del teclado para avanzar</span><button onclick="go(1)">Siguiente: cómo funciona →</button></div>
+    </section>
+
+    <!-- 2 CÓMO FUNCIONA -->
+    <section class="screen" id="s2" data-title="Cómo funciona">
+      <div class="section-head"><div><div class="eyebrow">Bienvenida</div><h2>Cómo funciona este ambiente</h2></div></div>
+      <p class="lede">El recorrido tiene tres semanas y una lógica sencilla: primero se entiende el problema, luego se produce en equipo, al final se evalúa con otros. Cada pantalla deja un producto parcial que alimenta el siguiente.</p>
+
+      <div class="timeline">
+        <div class="tl"><b>Semana 1 · Entender y discutir</b><span>Lectura guiada, video y ejercicio de verificación. Foro de arranque con roles rotativos y síntesis del equipo.</span></div>
+        <div class="tl"><b>Semana 2 · Producir en equipo</b><span>Wiki colaborativa con el protocolo de verificación de la escuela y pieza gráfica accesible. Revisión cruzada entre equipos.</span></div>
+        <div class="tl"><b>Semana 3 · Evaluar y mejorar</b><span>Taller de coevaluación con rúbrica, retroalimentación accionable y plan de mejora del equipo receptor.</span></div>
+      </div>
+
+      <div class="grid g3" style="margin-top:26px">
+        <div class="card num"><div class="tag">Regla 1</div><h3>Una idea por pantalla</h3><p>Cada sección responde una sola pregunta. Si una pantalla necesita dos ideas, se convierte en dos pantallas.</p></div>
+        <div class="card num"><div class="tag">Regla 2</div><h3>Todo producto se publica</h3><p>Lo que no se publica en la galería no cuenta como entregado: el aprendizaje se hace visible para el grupo.</p></div>
+        <div class="card num"><div class="tag">Regla 3</div><h3>La evaluación es formativa</h3><p>Cada criterio devuelve una explicación y una acción concreta. La calificación llega después de la mejora.</p></div>
+      </div>
+
+      <div class="callout info"><p><b>Accesibilidad desde el diseño:</b> el ambiente funciona en teléfono, no depende de audio para completar el recorrido y cada pieza publicada se revisa con una lista de contraste, tamaño de texto y texto alternativo.</p></div>
+      <div class="navbtns"><button onclick="go(-1)">← Portada</button><button onclick="go(1)">Siguiente: objetivos →</button></div>
+    </section>
+
+    <!-- 3 OBJETIVOS -->
+    <section class="screen" id="s3" data-title="Objetivos">
+      <div class="section-head"><div><div class="eyebrow">Parte 1</div><h2>Objetivos de aprendizaje</h2></div></div>
+      <p class="lede">Dos objetivos, dos productos verificables. El primero se resuelve en equipo; el segundo es individual, porque la evaluación entre pares es una decisión que nadie puede delegar.</p>
+
+      <div class="card" style="margin:18px 0">
+        <div class="tag">Objetivo 1 · en equipo</div>
+        <div class="obj" style="margin-top:10px">
+          <p>Al finalizar la semana 2, cada equipo de cuatro integrantes <span class="verb">diseñará</span> una campaña de ciudadanía digital para su comunidad escolar —mensaje verificado, pieza gráfica accesible y plan de difusión de una semana— y <span class="verb">justificará</span> tres decisiones de diseño (audiencia, mensaje y canal) con al menos dos fuentes verificables, en un tablero compartido y con retroalimentación de otro equipo.</p>
+        </div>
+        <table style="margin-bottom:0">
+          <tr><th style="width:24%">Componente</th><th>Definición aplicada</th></tr>
+          <tr><td>Dominio de conocimiento</td><td>Ciudadanía digital, verificación de información y comunicación pública en entornos escolares.</td></tr>
+          <tr><td>Verbo de acción</td><td><b>Diseñar</b> y <b>justificar</b>: verbos observables que dejan un producto y un argumento, no una opinión.</td></tr>
+          <tr><td>Desempeño esperado</td><td>Brief de campaña + pieza gráfica + plan de difusión, con tres justificaciones documentadas.</td></tr>
+          <tr><td>Condición</td><td>Equipos de 4, dos fuentes verificables, tablero compartido, revisión de otro equipo, 8 horas en dos semanas.</td></tr>
+        </table>
+      </div>
+
+      <div class="card">
+        <div class="tag">Objetivo 2 · individual</div>
+        <div class="obj" style="margin-top:10px">
+          <p>Al finalizar la semana 3, cada estudiante <span class="verb">evaluará</span> la campaña de otro equipo aplicando una rúbrica de cuatro criterios y <span class="verb">redactará</span> retroalimentación accionable —dos fortalezas y una mejora con acción concreta— en el taller de coevaluación, en 60 minutos y de forma individual.</p>
+        </div>
+        <table style="margin-bottom:0">
+          <tr><th style="width:24%">Componente</th><th>Definición aplicada</th></tr>
+          <tr><td>Dominio de conocimiento</td><td>Evaluación formativa, criterios de calidad de una pieza comunicativa y retroalimentación entre pares.</td></tr>
+          <tr><td>Verbo de acción</td><td><b>Evaluar</b> y <b>redactar</b>: aplicar criterios y producir un texto que otro pueda usar para mejorar.</td></tr>
+          <tr><td>Desempeño esperado</td><td>Dos evaluaciones con rúbrica y dos comentarios accionables por trabajo revisado.</td></tr>
+          <tr><td>Condición</td><td>Asignación automática del taller, 60 minutos, instrumento compartido, devolución en 24 horas.</td></tr>
+        </table>
+      </div>
+      <div class="navbtns"><button onclick="go(-1)">← Cómo funciona</button><button onclick="go(1)">Siguiente: contenidos →</button></div>
+    </section>
+
+    <!-- 4 CONTENIDOS -->
+    <section class="screen" id="s4" data-title="Contenidos">
+      <div class="section-head"><div><div class="eyebrow">Parte 1</div><h2>Contenido educativo</h2></div></div>
+      <p class="lede">Siete elementos, cada uno con una función distinta dentro del recorrido. No hay material decorativo: si un contenido no alimenta una actividad, no entra.</p>
+
+      <div class="grid g2" style="margin:18px 0 8px">
+        <div class="card"><div class="tag">C1.1 · Lectura guiada</div><h3>Del acceso a la participación</h3><p>Texto de 1 200 palabras con cinco preguntas de activación. Distingue usar plataformas de participar en ellas y sitúa la ciudadanía digital en la vida escolar.</p><p class="small"><span class="badge read">Lectura</span> 25 min · individual</p></div>
+        <div class="card"><div class="tag">C1.2 · Video con guía</div><h3>Anatomía de un mensaje público</h3><p>Video de 9:40 sobre audiencia, promesa y evidencia. La guía de escucha pide registrar seis decisiones del ejemplo analizado.</p><p class="small"><span class="badge video">Video</span> 30 min · individual</p></div>
+        <div class="card"><div class="tag">C1.3 · Ejercicio interactivo</div><h3>Verificar antes de compartir</h3><p>Cinco casos de desinformación escolar con retroalimentación inmediata: origen, fecha, autoría, imagen y contexto.</p><p class="small"><span class="badge ex">H5P</span> 35 min · individual</p></div>
+        <div class="card"><div class="tag">C1.4 · Plantilla</div><h3>Brief de campaña</h3><p>Documento compartido con cuatro secciones: audiencia, mensaje, canal y evidencia. Se completa en equipo y se convierte en el producto central.</p><p class="small"><span class="badge tpl">Plantilla</span> 60 min · equipo</p></div>
+        <div class="card"><div class="tag">C2.1 · Instrumento</div><h3>Rúbrica de coevaluación</h3><p>Cuatro criterios con cuatro niveles y descriptores observables. Es la misma rúbrica para producir y para evaluar: eso hace justa la revisión entre pares.</p><p class="small"><span class="badge ins">Instrumento</span> 30 min · individual</p></div>
+        <div class="card"><div class="tag">C2.2 · Guía comentada</div><h3>Retroalimentación accionable</h3><p>Tres ejemplos comentados: un comentario vago, uno correctivo y uno accionable. La comparación hace visible la diferencia antes de escribir.</p><p class="small"><span class="badge read">Guía</span> 30 min · individual</p></div>
+        <div class="card" style="grid-column:1/-1"><div class="tag">C2.3 · Curaduría colaborativa</div><h3>Banco de fuentes y citación APA 7</h3><p>Repositorio construido por el grupo: cada equipo aporta tres fuentes verificadas con ficha de lectura y referencia en APA 7. El banco se convierte en el criterio compartido para juzgar la evidencia de las campañas.</p><p class="small"><span class="badge tpl">Padlet</span> 45 min · equipo</p></div>
+      </div>
+
+      <h3 style="margin-top:26px">Alineación objetivos–contenido</h3>
+      <table>
+        <caption>Tabla 1. Correspondencia entre objetivos, contenidos y evidencia de aprendizaje.</caption>
+        <tr><th>Objetivo</th><th>Contenidos</th><th>Evidencia que produce</th></tr>
+        <tr><td class="tot">Objetivo 1 · Diseñar y justificar</td><td>C1.1, C1.2, C1.3, C1.4</td><td>Brief de campaña, pieza gráfica y plan de difusión publicados en la galería.</td></tr>
+        <tr><td class="tot">Objetivo 2 · Evaluar y redactar</td><td>C2.1, C2.2, C2.3</td><td>Dos evaluaciones con rúbrica y comentarios accionables en el taller.</td></tr>
+        <tr><td class="tot">Transversal</td><td>C2.3 en las tres semanas</td><td>Banco de fuentes con 24 fichas y citas en APA 7.</td></tr>
+      </table>
+      <div class="navbtns"><button onclick="go(-1)">← Objetivos</button><button onclick="go(1)">Siguiente: planificación →</button></div>
+    </section>
+
+    <!-- 5 PLANIFICACIÓN -->
+    <section class="screen" id="s5" data-title="Planificación">
+      <div class="section-head"><div><div class="eyebrow">Parte 1</div><h2>Matriz de planificación</h2></div></div>
+      <p class="lede">Tiempo realista para 12 horas en tres semanas. La columna de responsable indica quién mantiene el contenido en el ambiente, no quién lo estudia: todos estudian todo.</p>
+
+      <table>
+        <caption>Tabla 2. Matriz de planificación del ambiente (Anexo I de las instrucciones).</caption>
+        <tr><th>Objetivo o propósito</th><th>Contenido asociado</th><th>Responsable</th><th class="c">Duración en horas</th></tr>
+        <tr><td rowspan="4" class="tot">Objetivo 1<br><span class="small" style="font-weight:400">Diseñar y justificar una campaña</span></td><td>C1.1 Lectura guiada</td><td>Curaduría de contenido</td><td class="c">1.5</td></tr>
+        <tr><td>C1.2 Video con guía de escucha</td><td>Diseño y accesibilidad</td><td class="c">1.0</td></tr>
+        <tr><td>C1.3 Ejercicio de verificación</td><td>Verificación y datos</td><td class="c">1.5</td></tr>
+        <tr><td>C1.4 Brief de campaña</td><td>Coordinación</td><td class="c">4.0</td></tr>
+        <tr><td rowspan="3" class="tot">Objetivo 2<br><span class="small" style="font-weight:400">Evaluar y retroalimentar</span></td><td>C2.1 Rúbrica de coevaluación</td><td>Coordinación</td><td class="c">1.0</td></tr>
+        <tr><td>C2.2 Guía de retroalimentación</td><td>Diseño y accesibilidad</td><td class="c">1.0</td></tr>
+        <tr><td>C2.3 Banco de fuentes y APA 7</td><td>Curaduría de contenido</td><td class="c">1.0</td></tr>
+        <tr><td colspan="3" class="tot">Total del ambiente</td><td class="c tot">12.0</td></tr>
+      </table>
+
+      <div class="callout">
+        <p><b>Por qué este reparto:</b> cada objetivo suma seis horas de estudio y dos de producción. Se dejó una hora semanal de holgura porque la conectividad del grupo es irregular: quien se retrasa tiene un margen explícito y no depende de pedir prórroga.</p>
+      </div>
+
+      <h3>Ritmo semanal</h3>
+      <table>
+        <caption>Tabla 3. Distribución de hitos por semana.</caption>
+        <tr><th>Semana</th><th>Hito del equipo</th><th>Hito individual</th><th class="c">Cierre</th></tr>
+        <tr><td>1 · Entender</td><td>Hilo del foro abierto y síntesis con tres acuerdos</td><td>Postura con una cita verificada y dos réplicas</td><td class="c">Domingo 20:00</td></tr>
+        <tr><td>2 · Producir</td><td>Wiki de seis páginas y pieza gráfica publicadas</td><td>Dos fichas de fuente en el banco común</td><td class="c">Domingo 20:00</td></tr>
+        <tr><td>3 · Evaluar</td><td>Plan de mejora a partir de la revisión recibida</td><td>Dos evaluaciones con rúbrica y comentarios</td><td class="c">Domingo 20:00</td></tr>
+      </table>
+      <div class="navbtns"><button onclick="go(-1)">← Contenidos</button><button onclick="go(1)">Siguiente: herramientas →</button></div>
+    </section>
+
+    <!-- 6 HERRAMIENTAS -->
+    <section class="screen" id="s6" data-title="Herramientas">
+      <div class="section-head"><div><div class="eyebrow">Parte 2</div><h2>Herramientas: investigación y selección</h2></div></div>
+      <p class="lede">Se compararon doce herramientas de seis familias con el mismo instrumento. La decisión no fue elegir la más completa, sino la combinación que el grupo puede sostener con conectividad irregular y sin costo.</p>
+
+      <table>
+        <caption>Tabla 4. Evaluación comparativa (escala 1–5; total ponderado sobre 100).</caption>
+        <tr><th>Herramienta</th><th>Familia</th><th class="c">Facilidad de uso<br><span style="font-weight:400">20%</span></th><th class="c">Colaboración<br><span style="font-weight:400">25%</span></th><th class="c">Evaluación y retroalim.<br><span style="font-weight:400">20%</span></th><th class="c">Seguridad y privacidad<br><span style="font-weight:400">15%</span></th><th class="c">Costo<br><span style="font-weight:400">10%</span></th><th class="c">Accesibilidad y móvil<br><span style="font-weight:400">10%</span></th><th class="c">Total</th></tr>
+        <tr><td><b>Moodle 4</b></td><td>LMS</td><td class="c">4</td><td class="c">5</td><td class="c">5</td><td class="c">5</td><td class="c">5</td><td class="c">4</td><td class="c tot">94</td></tr>
+        <tr><td><b>Microsoft Teams</b></td><td>Comunicación</td><td class="c">5</td><td class="c">5</td><td class="c">3</td><td class="c">4</td><td class="c">4</td><td class="c">4</td><td class="c tot">85</td></tr>
+        <tr><td><b>Padlet</b></td><td>Colaboración visual</td><td class="c">5</td><td class="c">4</td><td class="c">3</td><td class="c">3</td><td class="c">3</td><td class="c">5</td><td class="c tot">77</td></tr>
+        <tr><td>Google Classroom</td><td>LMS</td><td class="c">5</td><td class="c">3</td><td class="c">3</td><td class="c">4</td><td class="c">5</td><td class="c">4</td><td class="c">77</td></tr>
+        <tr><td><b>Trello</b></td><td>Gestión de proyectos</td><td class="c">5</td><td class="c">4</td><td class="c">2</td><td class="c">4</td><td class="c">4</td><td class="c">4</td><td class="c tot">76</td></tr>
+        <tr><td>Canvas</td><td>LMS</td><td class="c">4</td><td class="c">4</td><td class="c">4</td><td class="c">4</td><td class="c">3</td><td class="c">3</td><td class="c">76</td></tr>
+        <tr><td><b>Canva</b></td><td>Creación</td><td class="c">5</td><td class="c">4</td><td class="c">2</td><td class="c">3</td><td class="c">4</td><td class="c">5</td><td class="c tot">75</td></tr>
+        <tr><td>Miro</td><td>Colaboración visual</td><td class="c">3</td><td class="c">5</td><td class="c">2</td><td class="c">3</td><td class="c">2</td><td class="c">3</td><td class="c">64</td></tr>
+        <tr><td>Microsoft Planner</td><td>Gestión de proyectos</td><td class="c">4</td><td class="c">3</td><td class="c">2</td><td class="c">4</td><td class="c">3</td><td class="c">3</td><td class="c">63</td></tr>
+        <tr><td>Slack</td><td>Comunicación</td><td class="c">3</td><td class="c">4</td><td class="c">2</td><td class="c">4</td><td class="c">2</td><td class="c">3</td><td class="c">62</td></tr>
+        <tr><td>Turnitin</td><td>Evaluación</td><td class="c">3</td><td class="c">2</td><td class="c">5</td><td class="c">4</td><td class="c">1</td><td class="c">2</td><td class="c">60</td></tr>
+        <tr><td>Genially</td><td>Creación</td><td class="c">4</td><td class="c">2</td><td class="c">2</td><td class="c">3</td><td class="c">3</td><td class="c">3</td><td class="c">55</td></tr>
+      </table>
+
+      <div class="grid g3" style="margin-top:6px">
+        <div class="card"><div class="tag">Seleccionadas</div><h3>La combinación final</h3><p>Moodle como aula; Teams para sincronía y dudas; Padlet para el banco de fuentes; Canva para las piezas; Trello para el tablero de roles; el Taller de Moodle para la coevaluación.</p></div>
+        <div class="card"><div class="tag">Descartadas</div><h3>Con argumento</h3><p>Turnitin por costo y enfoque punitivo; Miro por límite de tableros gratuitos; Genially por peso y exportación; Classroom por ausencia de grupos separados y taller entre pares.</p></div>
+        <div class="card"><div class="tag">Criterio de corte</div><h3>Regla de tres</h3><p>Una herramienta entra solo si cubre una función que ninguna otra ya cubre y si al menos dos integrantes la dominan. Así se evita sumar aplicaciones que nadie mantiene.</p></div>
+      </div>
+      <div class="navbtns"><button onclick="go(-1)">← Planificación</button><button onclick="go(1)">Siguiente: configuración →</button></div>
+    </section>
+
+    <!-- 7 CONFIGURACIÓN -->
+    <section class="screen" id="s7" data-title="Configuración">
+      <div class="section-head"><div><div class="eyebrow">Parte 2</div><h2>Configuración inicial</h2></div></div>
+      <p class="lede">Antes de abrir el ambiente se dejaron listos grupos, permisos, rúbricas y tableros. Configurar primero evita improvisar reglas a mitad del trabajo.</p>
+
+      <table>
+        <caption>Tabla 5. Configuración realizada en cada herramienta.</caption>
+        <tr><th>Herramienta</th><th>Configuración</th><th>Decisión de privacidad</th></tr>
+        <tr><td><b>Moodle</b></td><td>Curso en formato de temas con cuatro secciones; ocho grupos de cuatro con grupos separados en foros y talleres; finalización por actividad; insignias de verificador y curador; libro de calificaciones ponderado.</td><td>Acceso solo con cuenta institucional; sin invitados; aviso de datos y política de privacidad visibles en la primera sección.</td></tr>
+        <tr><td><b>Taller de Moodle</b></td><td>Rúbrica de cuatro criterios, dos evaluaciones por trabajo, asignación automática y plazo de 48 horas para revisar.</td><td>Evaluación anónima entre pares para reducir sesgos de amistad.</td></tr>
+        <tr><td><b>Microsoft Teams</b></td><td>Equipo con cinco canales; reunión recurrente los martes; grabación de la sesión en la nube; pestañas con el tablero y la rúbrica.</td><td>Solo los docentes crean canales; los estudiantes publican en los suyos.</td></tr>
+        <tr><td><b>Trello</b></td><td>Tablero con cinco listas (por hacer, en proceso, en revisión, publicado, acuerdos), cuatro etiquetas por rol y tarjeta plantilla con checklist.</td><td>Tablero privado del equipo; solo lectura para el docente.</td></tr>
+        <tr><td><b>Padlet</b></td><td>Tres muros: ideas, fuentes verificadas y galería. Moderación activa y comentarios abiertos.</td><td>Muro de lectura pública sin cuenta; escritura solo con enlace del curso.</td></tr>
+        <tr><td><b>Canva</b></td><td>Carpeta compartida con dos plantillas (1080 × 1350 y 1080 × 1920), paleta institucional y lista de verificación de contraste.</td><td>Exportación en PNG y PDF; sin publicar en redes desde la cuenta escolar.</td></tr>
+      </table>
+
+      <div class="callout info"><p><b>Prueba previa:</b> se recorrió el ambiente con tres estudiantes antes de abrirlo al grupo. Se corrigieron dos cosas: el taller no mostraba la rúbrica hasta después de entregar y el enlace del Padlet pedía cuenta. Ambas se resolvieron antes del inicio.</p></div>
+      <div class="navbtns"><button onclick="go(-1)">← Herramientas</button><button onclick="go(1)">Siguiente: actividad 1 →</button></div>
+    </section>
+
+    <!-- 8 ACTIVIDAD 1 -->
+    <section class="screen" id="s8" data-title="Actividad 1">
+      <div class="section-head"><div><div class="eyebrow">Parte 3 · Semana 1</div><h2>Actividad 1 · Foro de arranque</h2></div></div>
+      <p class="lede">Un foro no es una tarea: es una conversación con estructura. Aquí los roles rotan y la síntesis del equipo es el producto que se califica.</p>
+
+      <div class="grid g2">
+        <div class="card">
+          <div class="tag">Consigna para el estudiante</div>
+          <p style="margin-top:8px">Después de la lectura C1.1 y del video C1.2, publica una postura de 120 a 150 palabras que responda: <i>¿qué cambia cuando una escuela deja de pedir tareas en línea y empieza a pedir participación en línea?</i> Sostén tu postura con una cita en APA 7 y responde a dos compañeros de otro equipo.</p>
+          <p class="small"><b>Producto del equipo:</b> documento de síntesis con tres acuerdos y una discrepancia que quedó abierta.</p>
+        </div>
+        <div class="card">
+          <div class="tag">Roles</div>
+          <div class="role"><div class="avatar">CO</div><div><b>Coordinación</b><span>Abre el hilo, cuida los tiempos y publica la síntesis.</span></div></div>
+          <div class="role"><div class="avatar">CU</div><div><b>Curaduría</b><span>Verifica que cada cita exista y que la referencia esté completa.</span></div></div>
+          <div class="role"><div class="avatar">DI</div><div><b>Diseño</b><span>Da formato a la síntesis y la publica en la galería.</span></div></div>
+          <div class="role"><div class="avatar">VE</div><div><b>Verificación</b><span>Registra la participación y señala aportaciones sin sustento.</span></div></div>
+        </div>
+      </div>
+
+      <div class="grid g2" style="margin-top:18px">
+        <div class="card">
+          <div class="tag">Plazos</div>
+          <table style="margin:8px 0 0;box-shadow:none">
+            <tr><td>Hilo abierto</td><td class="c">lunes 9:00</td></tr>
+            <tr><td>Postura individual</td><td class="c">miércoles 23:59</td></tr>
+            <tr><td>Dos réplicas</td><td class="c">viernes 23:59</td></tr>
+            <tr><td>Síntesis del equipo</td><td class="c">domingo 20:00</td></tr>
+          </table>
+        </div>
+        <div class="card">
+          <div class="tag">Criterios</div>
+          <table style="margin:8px 0 0;box-shadow:none">
+            <tr><td>Pertinencia conceptual</td><td class="c">30%</td></tr>
+            <tr><td>Uso de fuentes y cita APA 7</td><td class="c">30%</td></tr>
+            <tr><td>Calidad de la réplica</td><td class="c">25%</td></tr>
+            <tr><td>Síntesis con acuerdos</td><td class="c">15%</td></tr>
+          </table>
+        </div>
+      </div>
+      <p class="small" style="margin-top:14px"><b>Contenidos integrados:</b> C1.1 y C1.2. <b>Evidencia:</b> hilo del foro con 32 aportaciones y documento de síntesis de cada equipo.</p>
+      <div class="navbtns"><button onclick="go(-1)">← Configuración</button><button onclick="go(1)">Siguiente: actividad 2 →</button></div>
+    </section>
+
+    <!-- 9 ACTIVIDAD 2 -->
+    <section class="screen" id="s9" data-title="Actividad 2">
+      <div class="section-head"><div><div class="eyebrow">Parte 3 · Semana 2</div><h2>Actividad 2 · Wiki y pieza gráfica</h2></div></div>
+      <p class="lede">El equipo construye un protocolo que su escuela puede usar mañana. La wiki obliga a escribir para otros; la pieza gráfica obliga a sintetizar sin perder rigor.</p>
+
+      <div class="grid g2">
+        <div class="card">
+          <div class="tag">Consigna para el estudiante</div>
+          <p style="margin-top:8px">Construyan una wiki de seis páginas con el <b>protocolo de verificación de información</b> de su escuela: qué se revisa, en qué orden, con qué evidencia y a quién se avisa cuando algo es falso. Cierren con una infografía de una página, legible en teléfono, con los cuatro pasos del protocolo.</p>
+          <p class="small"><b>Producto del equipo:</b> wiki publicada + infografía en la galería + carpeta de fuentes.</p>
+        </div>
+        <div class="card">
+          <div class="tag">Roles</div>
+          <div class="role"><div class="avatar">ED</div><div><b>Edición</b><span>Estructura de las seis páginas y coherencia de estilo.</span></div></div>
+          <div class="role"><div class="avatar">CU</div><div><b>Curaduría de fuentes</b><span>Cinco fuentes verificadas con ficha y referencia APA 7.</span></div></div>
+          <div class="role"><div class="avatar">DI</div><div><b>Diseño</b><span>Infografía accesible: contraste, tamaño y texto alternativo.</span></div></div>
+          <div class="role"><div class="avatar">VE</div><div><b>Verificación</b><span>Prueba el protocolo con tres casos reales y documenta el resultado.</span></div></div>
+        </div>
+      </div>
+
+      <h3 style="margin-top:24px">Hitos y revisión cruzada</h3>
+      <div class="timeline">
+        <div class="tl"><b>Lunes</b><span>Esquema de las seis páginas en el tablero, con responsable por página.</span></div>
+        <div class="tl"><b>Miércoles</b><span>Borrador con al menos tres fuentes integradas y una sección completa.</span></div>
+        <div class="tl"><b>Viernes</b><span>Revisión cruzada: otro equipo deja tres comentarios en la wiki (uno debe ser una objeción).</span></div>
+        <div class="tl"><b>Domingo</b><span>Publicación con lista de verificación firmada por los cuatro roles.</span></div>
+      </div>
+
+      <table>
+        <caption>Tabla 6. Rúbrica de la actividad 2 (cuatro criterios, cuatro niveles).</caption>
+        <tr><th class="rubric">Criterio</th><th>Excelente</th><th>Suficiente</th><th>En proceso</th></tr>
+        <tr><td>Exactitud y trazabilidad (35%)</td><td>Cada afirmación tiene fuente verificable; el protocolo resiste tres casos difíciles.</td><td>Las fuentes existen, pero una afirmación queda sin respaldo.</td><td>Predominan afirmaciones sin fuente o con fuente incompleta.</td></tr>
+        <tr><td>Claridad del protocolo (25%)</td><td>Un lector nuevo puede aplicarlo sin ayuda.</td><td>Se entiende con una explicación adicional.</td><td>Requiere interpretación del equipo.</td></tr>
+        <tr><td>Accesibilidad de la pieza (20%)</td><td>Contraste, tamaño y texto alternativo verificados en teléfono.</td><td>Falla uno de los tres elementos.</td><td>La pieza no se lee en pantalla pequeña.</td></tr>
+        <tr><td>Colaboración registrada (20%)</td><td>Los cuatro roles dejan huella verificable en el historial.</td><td>Dos o tres roles con huella clara.</td><td>El trabajo se concentra en una persona.</td></tr>
+      </table>
+      <p class="small"><b>Contenidos integrados:</b> C1.3, C1.4 y C2.3. <b>Evidencia:</b> historial de versiones, comentarios de la revisión cruzada y tablero.</p>
+      <div class="navbtns"><button onclick="go(-1)">← Actividad 1</button><button onclick="go(1)">Siguiente: actividad 3 →</button></div>
+    </section>
+
+    <!-- 10 ACTIVIDAD 3 -->
+    <section class="screen" id="s10" data-title="Actividad 3">
+      <div class="section-head"><div><div class="eyebrow">Parte 3 · Semana 3</div><h2>Actividad 3 · Taller de coevaluación</h2></div></div>
+      <p class="lede">Cada estudiante evalúa dos campañas de otro equipo. La retroalimentación no puede quedarse en «está bien»: tiene que decir qué hacer, dónde y cómo.</p>
+
+      <div class="grid g2">
+        <div class="card">
+          <div class="tag">Consigna para el estudiante</div>
+          <p style="margin-top:8px">Evalúa dos campañas asignadas por el taller con la rúbrica de cuatro criterios. Por cada trabajo escribe <b>dos fortalezas</b> con evidencia y <b>una mejora accionable</b> que indique qué cambiar, en qué parte y cómo verificarlo. Después, tu equipo recibe la revisión y publica un plan de mejora de una página.</p>
+          <p class="small"><b>Producto individual:</b> dos evaluaciones con rúbrica y dos comentarios accionables.</p>
+        </div>
+        <div class="card">
+          <div class="tag">Criterios de la retroalimentación</div>
+          <table style="margin:8px 0 0;box-shadow:none">
+            <tr><td>Aplicación de la rúbrica</td><td class="c">40%</td></tr>
+            <tr><td>Calidad de la retroalimentación</td><td class="c">30%</td></tr>
+            <tr><td>Tono y respeto</td><td class="c">15%</td></tr>
+            <tr><td>Puntualidad</td><td class="c">15%</td></tr>
+          </table>
+          <p class="small" style="margin-top:10px"><b>Regla del taller:</b> un comentario sin acción concreta se devuelve sin calificar.</p>
+        </div>
+      </div>
+
+      <div class="callout">
+        <p><b>Ejemplo de lo que se pide:</b> «La pieza no se lee en teléfono porque el texto del paso 3 mide 11 puntos y el fondo es claro. Sube el cuerpo a 18 puntos y cambia el gris por el azul institucional; verifica con la lista de contraste antes de publicar.» Eso es accionable: dice qué, dónde y cómo comprobarlo.</p>
+      </div>
+
+      <h3>Participación esperada</h3>
+      <table>
+        <caption>Tabla 7. Indicadores de la actividad 3.</caption>
+        <tr><th>Indicador</th><th>Meta</th><th>Registro</th></tr>
+        <tr><td>Estudiantes que evalúan dos trabajos</td><td>100% del grupo</td><td>Reporte del Taller de Moodle</td></tr>
+        <tr><td>Comentarios con acción concreta</td><td>Al menos 90%</td><td>Revisión por muestreo del docente</td></tr>
+        <tr><td>Planes de mejora publicados</td><td>8 de 8 equipos</td><td>Galería del ambiente</td></tr>
+      </table>
+      <div class="navbtns"><button onclick="go(-1)">← Actividad 2</button><button onclick="go(1)">Siguiente: sala de equipo →</button></div>
+    </section>
+
+    <!-- 11 SALA DE EQUIPO -->
+    <section class="screen" id="s11" data-title="Sala de equipo">
+      <div class="section-head"><div><div class="eyebrow">Implementación</div><h2>Sala de equipo</h2></div></div>
+      <p class="lede">El tablero es público para el grupo y privado hacia fuera. Cada tarjeta tiene responsable y fecha; cada acuerdo queda escrito para que la colaboración se pueda revisar, no solo recordar.</p>
+
+      <div class="board">
+        <div class="col"><h4>Por hacer</h4>
+          <div class="tk">Ficha de fuente 3 <span class="tk who">Curaduría · vence 18 nov</span></div>
+          <div class="tk">Texto alternativo de la pieza <span class="tk who">Diseño · vence 19 nov</span></div>
+        </div>
+        <div class="col"><h4>En proceso</h4>
+          <div class="tk">Página 4: cuándo avisar <span class="tk who">Edición · hoy</span></div>
+          <div class="tk">Prueba del protocolo con 3 casos <span class="tk who">Verificación · mañana</span></div>
+        </div>
+        <div class="col"><h4>En revisión</h4>
+          <div class="tk rev">Infografía v2 <span class="tk who">Revisión cruzada · equipo 6</span></div>
+        </div>
+        <div class="col"><h4>Publicado</h4>
+          <div class="tk done">Brief de campaña <span class="tk who">Aprobado 14 nov</span></div>
+          <div class="tk done">Acta de acuerdos <span class="tk who">Aprobado 11 nov</span></div>
+        </div>
+      </div>
+
+      <div class="grid g2">
+        <div class="card"><div class="tag">Acuerdos del equipo</div>
+          <p style="margin-top:8px">1. Nadie publica sin que otro haya leído. 2. Toda afirmación lleva fuente o se retira. 3. Las decisiones se toman en el canal, no en mensajes privados. 4. Quien no puede cumplir avisa con 24 horas y propone reemplazo.</p>
+        </div>
+        <div class="card"><div class="tag">Bitácora</div>
+          <p style="margin-top:8px"><b>11 nov:</b> se define el tema de la campaña y se reparten roles.<br><b>14 nov:</b> brief aprobado; se descarta el eslogan inicial por ambigüedad.<br><b>17 nov:</b> revisión cruzada con el equipo 6; se acepta la objeción sobre el paso 2.<br><b>19 nov:</b> publicación de la wiki y de la infografía.</p>
+        </div>
+      </div>
+      <div class="navbtns"><button onclick="go(-1)">← Actividad 3</button><button onclick="go(1)">Siguiente: evaluación →</button></div>
+    </section>
+
+    <!-- 12 EVALUACIÓN -->
+    <section class="screen" id="s12" data-title="Evaluación">
+      <div class="section-head"><div><div class="eyebrow">Cierre</div><h2>Evaluación del ambiente</h2></div></div>
+      <p class="lede">La calificación se compone de productos y de proceso. La colaboración pesa porque es el aprendizaje que el ambiente existe para producir.</p>
+
+      <table>
+        <caption>Tabla 8. Ponderación del ambiente.</caption>
+        <tr><th>Componente</th><th>Qué mide</th><th class="c">Peso</th></tr>
+        <tr><td>Foro de arranque</td><td>Argumentación con fuentes y réplica</td><td class="c">15%</td></tr>
+        <tr><td>Wiki y pieza gráfica</td><td>Protocolo, exactitud y accesibilidad</td><td class="c">30%</td></tr>
+        <tr><td>Brief de campaña</td><td>Decisiones justificadas y coherencia</td><td class="c">25%</td></tr>
+        <tr><td>Coevaluación</td><td>Calidad de la retroalimentación</td><td class="c">15%</td></tr>
+        <tr><td>Colaboración registrada</td><td>Huella de los cuatro roles en el historial</td><td class="c">15%</td></tr>
+      </table>
+
+      <div class="grid g2">
+        <div class="card"><div class="tag">Antes de publicar</div>
+          <ul><li>¿La afirmación central tiene fuente verificable?</li><li>¿La pieza se lee a 360 px de ancho?</li><li>¿Cada integrante dejó huella en el historial?</li><li>¿La justificación dice por qué ese canal y no otro?</li></ul>
+        </div>
+        <div class="card"><div class="tag">Después de la revisión</div>
+          <ul><li>¿Se respondió a la objeción o se ignoró?</li><li>¿El plan de mejora nombra una acción concreta?</li><li>¿Se conservó la versión anterior para comparar?</li><li>¿La devolución a otro equipo llegó a tiempo?</li></ul>
+        </div>
+      </div>
+
+      <div class="callout info"><p><b>Datos de la implementación:</b> 32 estudiantes, 8 equipos, 3 semanas. Publicaron los 8 equipos; 29 de 32 estudiantes evaluaron los dos trabajos asignados; el banco de fuentes cerró con 24 fichas verificadas.</p></div>
+      <div class="navbtns"><button onclick="go(-1)">← Sala de equipo</button><button onclick="go(1)">Siguiente: galería y acceso →</button></div>
+    </section>
+
+    <!-- 13 GALERÍA / ACCESO -->
+    <section class="screen" id="s13" data-title="Galería y acceso">
+      <div class="section-head"><div><div class="eyebrow">Cierre</div><h2>Galería y acceso</h2></div></div>
+      <p class="lede">Aquí se publican los productos de la semana 2 y los planes de mejora de la semana 3. La galería es la memoria del grupo: lo que no está, no ocurrió.</p>
+
+      <div class="gallery" style="margin:18px 0 6px">
+        <div class="gitem">Equipo 1 · Protocolo de verificación<br><span class="small">publicado 19 nov</span></div>
+        <div class="gitem">Equipo 2 · Infografía «4 pasos»<br><span class="small">publicado 19 nov</span></div>
+        <div class="gitem">Equipo 3 · Brief de campaña<br><span class="small">publicado 18 nov</span></div>
+        <div class="gitem">Equipo 4 · Plan de difusión<br><span class="small">publicado 20 nov</span></div>
+        <div class="gitem">Equipo 5 · Pieza «Antes de reenviar»<br><span class="small">publicado 19 nov</span></div>
+        <div class="gitem">Equipo 6 · Plan de mejora<br><span class="small">publicado 21 nov</span></div>
+      </div>
+
+      <h3 style="margin-top:26px">Acceso</h3>
+      <table>
+        <tr><th style="width:30%">Recurso</th><th>Acceso</th></tr>
+        <tr><td>Aula (Moodle)</td><td>Enlace del curso con cuenta institucional · <span class="small">el equipo docente administra las inscripciones</span></td></tr>
+        <tr><td>Versión de consulta</td><td>Este ambiente funciona sin conexión y sin cuenta: es la vista pública que se comparte con el asesor.</td></tr>
+        <tr><td>Video del ambiente</td><td>Presentación en video de 4:38 (13 escenas) publicada en YouTube, con acceso por enlace.</td></tr>
+        <tr><td>Soporte</td><td>Canal «Dudas» en Teams, respuesta en menos de 24 horas hábiles.</td></tr>
+      </table>
+
+      <div class="callout"><p><b>Nota de uso:</b> este archivo es la versión de consulta del ambiente. Conserva el contenido, la secuencia y las tablas; las funciones de Moodle (entregas, taller, libro de calificaciones) viven en el aula institucional.</p></div>
+      <div class="navbtns"><button onclick="go(-1)">← Evaluación</button><span class="hint">Fin del recorrido</span></div>
+    </section>
+
+    <footer class="site">
+      Ambiente de aprendizaje colaborativo en línea · <b>Estudio Abierto</b> · Universidad Virtual del Estado de Guanajuato · Reto 4, noviembre de 2026.
+    </footer>
+  </main>
+</div>
+
+<script>
+const screens = Array.from(document.querySelectorAll('.screen'));
+const navList = document.getElementById('navList');
+let current = 0;
+
+screens.forEach((s, i) => {
+  const li = document.createElement('li');
+  const b = document.createElement('button');
+  b.innerHTML = '<span class="num">' + String(i+1).padStart(2,'0') + '</span><span>' + s.dataset.title + '</span>';
+  b.addEventListener('click', () => go(i - current));
+  li.appendChild(b); navList.appendChild(li);
+});
+
+function go(delta){
+  const next = Math.min(screens.length - 1, Math.max(0, current + delta));
+  show(next);
+}
+
+function show(i){
+  screens[current].classList.remove('active');
+  current = i;
+  screens[current].classList.add('active');
+  const btns = navList.querySelectorAll('button');
+  btns.forEach((b, k) => b.setAttribute('aria-current', k === i ? 'true' : 'false'));
+  document.getElementById('crumbNow').textContent = screens[i].dataset.title;
+  const pct = Math.round(((i + 1) / screens.length) * 100);
+  document.getElementById('pct').textContent = pct + '%';
+  document.getElementById('pbar').style.width = pct + '%';
+  history.replaceState(null, '', '#' + (i + 1));
+  window.scrollTo({top:0, behavior:'instant'});
+}
+
+document.addEventListener('keydown', e => {
+  if (e.key === 'ArrowRight') go(1);
+  if (e.key === 'ArrowLeft') go(-1);
+});
+
+const fromHash = parseInt((location.hash || '').replace('#', ''), 10);
+show(Number.isFinite(fromHash) && fromHash > 0 ? Math.min(screens.length - 1, fromHash - 1) : 0);
+
+window.addEventListener('hashchange', () => {
+  const h = parseInt((location.hash || '').replace('#', ''), 10);
+  if (Number.isFinite(h) && h > 0) show(Math.min(screens.length - 1, h - 1));
+});
+</script>
+</body>
+</html>
